@@ -339,21 +339,29 @@ class compilatioservice {
      * @return mixed return an int of size if succeed, false otherwise.
      */
     public function get_allowed_file_max_size() {
-
+        global $SESSION;
         try {
+            
+            if (isset($SESSION->compilatio_allowed_file_max_size)) {
+                return $SESSION->compilatio_allowed_file_max_size;
+            }
+            
             if (!is_object($this->soapcli)) {
                 return false;
             }
 
             $params = array($this->key);
-            return $this->soapcli->__call('getAllowedFileMaxSize', $params);
+            $size = $this->soapcli->__call('getAllowedFileMaxSize', $params);
+            
+            $SESSION->compilatio_allowed_file_max_size = $this->soapcli->__call('getAllowedFileMaxSize', $params);
+            return $SESSION->compilatio_allowed_file_max_size;
 
         } catch (SoapFault $fault) {
             return false;
         }
 
     }
-
+    
     /**
      * Get a list of the allowed file types by Compilatio.
      *
